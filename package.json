@@ -1,0 +1,8 @@
+{
+  "name": "avatarGif",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:JackWong992/avatarGif.git",
+  "author": "JackWong992 <jackwong992@163.com>",
+  "license": "MIT"
+}
