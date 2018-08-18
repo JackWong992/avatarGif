@@ -103,180 +103,73 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   // Override the current require with this new one
   return newRequire;
-})({"main.js":[function(require,module,exports) {
-var canvas = new fabric.Canvas("iAvatar", {
-  preserveObjectStacking: true
-});
-canvas.backgroundColor = "rgba(255,255,255,1)";
-fabric.Image.fromURL("avatar.png", function (oImg) {
-  canvas.insertAt(oImg, 0);
-}); //设置外卖头盔图层的位置为最下面
+})({"../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
+var bundleURL = null;
+function getBundleURLCached() {
+  if (!bundleURL) {
+    bundleURL = getBundleURL();
+  }
 
-
-//双击图片显示粘贴
-function eventit() {
-  $(canvas.getObjects()).each(function (t, e) {
-    e.on("mousedblclick", function (t) {
-      var e = t.target;
-      console.log(e.type);
-      canvas.bringToFront(e);
-      canvas.discardActiveObject();
-      canvas.renderAll();
-    });
-  });
-}
-//图片的颜色改变
-function control_init() {
-  var t = canvas.getObjects();
-  $(t).each(function (t, e) {
-    e.set({
-      cornerSize: 15,
-      padding: 5,
-      transparentCorners: !0,
-      cornerStyle: "circle",
-      cornerColor: "#CD853F",
-      borderColor: "#CD853F"
-    });
-  });
+  return bundleURL;
 }
 
-//设置头盔上面图片的位置信息
-fabric.Image.fromURL("python.png", function (oImg) {
-  canvas.insertAt(oImg, 1);
-  oImg.set("top", 91);
-  oImg.set("left", 98);
-  oImg.set("angle", 320);
-  oImg.set("scaleX", 0.3);
-  oImg.set("scaleY", 0.3);
-  oImg.set({
-    cornerSize: 15,
-    padding: 5,
-    transparentCorners: true,
-    CornerStyle: "circle",
-    cornerColor: "#CD853F",
-    borderColor: "#CD853F"
-  });
-});
-//设置文字旋转
-var text = new fabric.Text("人生苦短，我用python", {
-  top: 182,
-  left: 145,
-  angle: 321,
-  scaleX: 0.4,
-  scaleY: 0.38
-});
-text.set("fill", "white");
-text.set({
-  cornerSize: 15,
-  padding: 5,
-  transparentCorners: true,
-  CornerStyle: "circle",
-  cornerColor: "#CD853F",
-  borderColor: "#CD853F"
-});
-canvas.insertAt(text, 2);
-
-$("#downloadPic").on("click", function () {
-  download(canvas.toDataURL("png"), "avatar.png", "image/png");
-});
-
-//旋转图片  获取图片得坐标
-$("#debug").on("click", function () {
-  var obj = canvas.getActiveObject(); //获取选中的素材
-  console.log("top=" + obj.top);
-  console.log("left=" + obj.left);
-  console.log("angle=" + obj.angle);
-  console.log("scaleX=" + obj.scaleX);
-  console.log("scaleY=" + obj.scaleY);
-});
-$(function () {
-  var listener = new window.keypress.Listener();
-
-  //点击delete按钮实现删除图片
-  listener.simple_combo("delete", function () {
-    var obj = canvas.getActiveObject();
-    if (obj) {
-      canvas.remove(obj);
-    }
-  });
-  //点击[ 向左平移图片
-  listener.simple_combo("[", function () {
-    var obj = canvas.getActiveObject();
-    if (obj) {
-      canvas.bringForward(obj);
-    }
-  });
-  //点击]向右平移图片
-  listener.simple_combo("]", function () {
-    var obj = canvas.getActiveObject();
-    if (obj) {
-      canvas.sendBackwards(obj);
-    }
-  });
-  text_init();
-});
-
-//文字打印
-function text_init() {
-  $(canvas.getObjects()).each(function (index, item) {
-    if (item.type == "text") {
-      item.on("selected", function () {
-        $("#userText").val(item.text);
-        $("#userText").prop("disabled", false);
-      });
-    }
-  });
-}
-//修改输入文本，改变头像文字:输入框增加onchange事件
-$("#userText").on("change", function () {
-  var newText = $("#userText").val();
-  console.log(newText);
-  if (newText.length > 0) {
-    var obj = canvas.getActiveObject();
-    if (obj && obj.type == "text") {
-      obj.set("text", newText);
-      canvas.renderAll();
+function getBundleURL() {
+  // Attempt to find the URL of the current script and use that as the base URL
+  try {
+    throw new Error();
+  } catch (err) {
+    var matches = ('' + err.stack).match(/(https?|file|ftp):\/\/[^)\n]+/g);
+    if (matches) {
+      return getBaseURL(matches[0]);
     }
   }
-});
 
-$("#pic_add").on("click", function () {
-  var data_url = canvas.toDataURL("png");
-  var li = $("<li><img  src='" + data_url + "'></li>");
-  $(".image-list").append(li);
-});
-$("#pic_build").on("click", function () {
-  var gif = new GIF({
-    workers: 2,
-    quality: 10,
-    width: 460,
-    height: 460
-  });
-  $(".image-list li img").each(function (index, item) {
-    gif.addFrame(item, { delay: 1000 });
-  });
+  return '/';
+}
 
-  gif.on("finished", function (blob) {
-    download(blob), "avatar.gif", "image/gif";
-  });
-  gif.render();
-});
+function getBaseURL(url) {
+  return ('' + url).replace(/^((?:https?|file|ftp):\/\/.+)\/[^/]+$/, '$1') + '/';
+}
 
-//双击图片加入头像制作区
-$(function () {
-  $(".image-list").on("dblclick", "li", function () {
-    $(this).remove();
-  }), $(".bg-list>li img").on("dblclick", function () {
-    fabric.Image.fromURL(this.src, function (t) {
-      canvas.add(t);
-      eventit();
-      control_init();
-    });
-  });
-  //  clipboard_init()
-  //key_init()
-});
-},{}],"../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+exports.getBundleURL = getBundleURLCached;
+exports.getBaseURL = getBaseURL;
+},{}],"../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/css-loader.js":[function(require,module,exports) {
+var bundle = require('./bundle-url');
+
+function updateLink(link) {
+  var newLink = link.cloneNode();
+  newLink.onload = function () {
+    link.remove();
+  };
+  newLink.href = link.href.split('?')[0] + '?' + Date.now();
+  link.parentNode.insertBefore(newLink, link.nextSibling);
+}
+
+var cssTimeout = null;
+function reloadCSS() {
+  if (cssTimeout) {
+    return;
+  }
+
+  cssTimeout = setTimeout(function () {
+    var links = document.querySelectorAll('link[rel="stylesheet"]');
+    for (var i = 0; i < links.length; i++) {
+      if (bundle.getBaseURL(links[i].href) === bundle.getBundleURL()) {
+        updateLink(links[i]);
+      }
+    }
+
+    cssTimeout = null;
+  }, 50);
+}
+
+module.exports = reloadCSS;
+},{"./bundle-url":"../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"main.css":[function(require,module,exports) {
+
+var reloadCSS = require('_css_loader');
+module.hot.dispose(reloadCSS);
+module.hot.accept(reloadCSS);
+},{"_css_loader":"../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 
@@ -305,7 +198,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '52840' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '54341' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
@@ -446,5 +339,4 @@ function hmrAccept(bundle, id) {
     return hmrAccept(global.parcelRequire, id);
   });
 }
-},{}]},{},["../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","main.js"], null)
-//# sourceMappingURL=/main.d707ffef.map
+},{}]},{},["../../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js"], null)

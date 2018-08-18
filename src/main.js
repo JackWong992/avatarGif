@@ -2,7 +2,7 @@ var canvas = new fabric.Canvas("iAvatar", {
   preserveObjectStacking: true
 });
 canvas.backgroundColor = "rgba(255,255,255,1)";
-fabric.Image.fromURL("avatar.png", function(oImg) {
+fabric.Image.fromURL("./img/avatar.png", function(oImg) {
   canvas.insertAt(oImg, 0);
 }); //设置外卖头盔图层的位置为最下面
 
@@ -35,7 +35,7 @@ function control_init() {
 }
 
 //设置头盔上面图片的位置信息
-fabric.Image.fromURL("python.png", function(oImg) {
+fabric.Image.fromURL("./img/python.png", function(oImg) {
   canvas.insertAt(oImg, 1);
   oImg.set("top", 91);
   oImg.set("left", 98);
